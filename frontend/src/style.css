@@ -11,6 +11,10 @@
     --text-dim: #607d8b;
     --font-tech: 'Rajdhani', sans-serif;
     --font-display: 'Orbitron', sans-serif;
+
+    /* Spacing System */
+    --gap-sm: 8px;
+    --gap-md: 12px;
 }
 
 * {
@@ -53,8 +57,8 @@ body::before {
     display: grid;
     grid-template-rows: 45px 1fr;
     height: 100vh;
-    padding: 0 10px 6px 10px;
-    gap: 6px;
+    padding: 0 var(--gap-md) var(--gap-sm) var(--gap-md);
+    gap: var(--gap-sm);
     position: relative;
     z-index: 1;
 }
@@ -62,8 +66,8 @@ body::before {
 /* === 主内容区 === */
 .main-content {
     display: grid;
-    grid-template-columns: 28% 1fr 28%;
-    gap: 10px;
+    grid-template-columns: 26% 1fr 26%;
+    gap: var(--gap-md);
     height: 100%;
     min-height: 0;
     overflow: hidden;
@@ -74,21 +78,25 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding: 4px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
     flex-shrink: 0;
 }
 
 .dr-label {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-dim);
+    letter-spacing: 0.5px;
 }
 
 .dr-value {
     font-family: var(--font-display);
-    font-size: 22px;
+    font-size: 32px;
+    font-weight: 700;
     color: #fff;
     line-height: 1;
+    margin-top: 6px;
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
 }
 
 .dr-unit {
@@ -115,12 +123,14 @@ body::before {
     overflow-y: auto;
     color: var(--text-dim);
     flex: 1;
+    backdrop-filter: blur(4px);
 }
 
 .log-entry {
     margin-bottom: 4px;
     border-left: 2px solid transparent;
     padding-left: 5px;
+    line-height: 1.4;
 }
 
 .log-entry.info {
@@ -220,17 +230,22 @@ body::before {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 8px;
-    gap: 6px;
+    padding: 16px;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
 }
 
 .panel-title-inner {
-    padding: 6px 12px;
+    padding: 8px 16px;
     font-family: var(--font-display);
-    font-size: 13px;
+    font-size: 16px;
+    font-weight: bold;
     color: #fff;
-    background: linear-gradient(90deg, rgba(0, 242, 255, 0.1), transparent);
-    border-left: 3px solid var(--primary);
+    background: linear-gradient(90deg, rgba(0, 242, 255, 0.15), transparent);
+    border-left: 4px solid var(--primary);
     letter-spacing: 2px;
     flex-shrink: 0;
+    margin-bottom: 8px;
+    text-shadow: 0 0 5px rgba(0, 242, 255, 0.3);
 }

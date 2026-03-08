@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@kjgl77/datav-vue3": "^1.7.4",
+    "@types/three": "^0.182.0",
     "echarts": "^5.6.0",
     "echarts-liquidfill": "^3.1.0",
+    "three": "^0.182.0",
     "vue": "^3.5.24"
   },
   "devDependencies": {

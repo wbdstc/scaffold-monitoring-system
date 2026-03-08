@@ -3,6 +3,8 @@ import { ref, reactive, onMounted, onUnmounted } from 'vue'
 // 阈值配置
 const THRESHOLD_LOAD = 1000
 const THRESHOLD_VIB = 1.0
+const THRESHOLD_TILT = 10.0 // 倾斜阈值 (度)
+let smoothX = 0 // 低通滤波状态变量
 
 // 响应式状态
 export const sensorData = reactive({
@@ -12,7 +14,9 @@ export const sensorData = reactive({
     maxLoad: 0,
     stability: 100,
     loadRatio: 0,
-    status: 'MONITORING' as 'MONITORING' | 'VIBRATION ALERT' | 'OVERLOAD',
+    tiltAngle: 0, // 倾斜角度
+    safetyScore: 100, // 综合安全评分 (0-100)
+    status: 'MONITORING' as 'MONITORING' | 'VIBRATION ALERT' | 'OVERLOAD' | 'TILT ALERT',
     statusColor: 'var(--success)'
 })
 
@@ -110,10 +114,44 @@ export function useWebSocket() {
             loadHistory.value.push(w)
 
             // 报警逻辑
+            // ------------------------------------------------
+            // 1. 核心算法实现 (Low-Pass Filter for Tilt Detection)
+            // ------------------------------------------------
+            // 滤波算法：smoothX = smoothX * 0.98 + v * 0.02
+            smoothX = smoothX * 0.95 + v * 0.05
+
+            // 计算倾斜角：tiltAngle = asin(smoothX) * (180/PI)
+            // 边界保护：Math.asin 参数必须在 [-1, 1] 之间
+            const clampedX = Math.max(-1, Math.min(1, smoothX))
+            let angle = Math.asin(clampedX) * (180 / Math.PI)
+
+            //若是计算结果为NaN (理论上clampedX保护了，但双重保险)
+            if (isNaN(angle)) angle = 0
+
+            sensorData.tiltAngle = parseFloat(angle.toFixed(1))
+
+            // ------------------------------------------------
+            // 2. 综合安全评分 (结合晃动、偏移、荷载)
+            // ------------------------------------------------
+            // 各项扣分权重: 晃动40%, 偏移30%, 荷载30%
+            const vibScore = Math.max(0, 40 - (Math.abs(v) / THRESHOLD_VIB) * 40)
+            const tiltScore = Math.max(0, 30 - (Math.abs(angle) / THRESHOLD_TILT) * 30)
+            const loadScore = Math.max(0, 30 - (sensorData.loadRatio) * 30)
+            sensorData.safetyScore = Math.round(vibScore + tiltScore + loadScore)
+
+            // ------------------------------------------------
+            // 3. 报警逻辑
+            // ------------------------------------------------
             if (w > THRESHOLD_LOAD) {
                 addLog(`荷载过载预警! Value: ${w}kg`, 'danger')
                 beep(400)
                 sensorData.status = 'OVERLOAD'
+                sensorData.statusColor = 'var(--danger)'
+            } else if (Math.abs(angle) > THRESHOLD_TILT) {
+                // 倾斜报警
+                addLog(`⚠️ TILT WARNING: ${angle.toFixed(1)}° detected!`, 'danger')
+                beep(800)
+                sensorData.status = 'TILT ALERT'
                 sensorData.statusColor = 'var(--danger)'
             } else if (Math.abs(v) > THRESHOLD_VIB) {
                 addLog(`震动异常! Value: ${v.toFixed(2)}g`, 'warn')

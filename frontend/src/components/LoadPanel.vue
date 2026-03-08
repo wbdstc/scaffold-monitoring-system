@@ -125,18 +125,21 @@ watch(() => loadHistory.value, () => {
 
 <style scoped>
 .chart-section {
+  border: 1px solid rgba(0, 242, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px;
   display: flex;
   flex-direction: column;
 }
 
 .chart-section.liquid {
   flex: 1.2;
-  padding: 5px 0;
+  /* padding removed (handled by .chart-section) */
 }
 
 .chart-section.trend {
   flex: 1.2;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-  padding-top: 5px;
+  /* border-top removed (handled by .chart-section isolation) */
+  margin-top: 6px; 
 }
 </style>

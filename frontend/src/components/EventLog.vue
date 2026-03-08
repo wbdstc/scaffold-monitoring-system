@@ -27,6 +27,6 @@ import { logs } from '../composables/useWebSocket'
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 5px;
+  padding: var(--gap-sm);
 }
 </style>

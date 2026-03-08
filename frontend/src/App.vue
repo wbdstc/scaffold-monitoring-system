@@ -184,7 +184,7 @@ function handleEnter() {
 .center-stage {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--gap-md);
   height: 100%;
   min-height: 0;
 }
@@ -192,10 +192,13 @@ function handleEnter() {
 .center-stage > :first-child {
   flex: 1;
   min-height: 0;
+  /* Ensure 3D view gets priority space */
 }
 
 .center-stage > :last-child {
-  height: 100px;
+  height: 25%; /* Give log more breathing room */
+  min-height: 150px;
+  max-height: 300px;
   flex-shrink: 0;
 }
 </style>
