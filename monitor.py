@@ -6,6 +6,8 @@ from collections import deque
 import re
 import numpy as np
 
+# Legacy local debug plot. This is not part of the dashboard one-click startup.
+
 # ================= 🔧 必须修改的区域 =================
 # 🔴 请确保这里是你真实的端口号 (例如 'COM3', 'COM5')
 SERIAL_PORT = 'COM5'  
